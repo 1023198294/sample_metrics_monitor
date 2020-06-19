@@ -14,7 +14,7 @@ spec:
     app: prometheus
   type: NodePort
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -22,6 +22,9 @@ metadata:
   name: prometheus
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
   template:
     metadata:
       labels:
@@ -31,7 +34,7 @@ spec:
       serviceAccount: prometheus
       containers:
         - name: prometheus
-          image: prom/prometheus:v2.2.1
+          image: prom/prometheus
           command:
             - "/bin/prometheus"
           args:
