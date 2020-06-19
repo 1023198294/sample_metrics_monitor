@@ -12,20 +12,25 @@ import (
 )
 
 func main(){
+	log.Println("hyj monitor")
 	http.HandleFunc("/abc", index)
 	http.HandleFunc("/usage", usage)
 	http.Handle("/metrics", promhttp.Handler())
 	metrics.Register()
+	go loop()
 	err := http.ListenAndServe(":5565", nil) // 设置监听的端口
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
-	go loop()
 }
 func loop(){
-	v,_ := mem.VirtualMemory()
-	time.Sleep(time.Second*50)
-	metrics.RequestResourceUpdate(v.UsedPercent)
+	for true {
+		time.Sleep(time.Second * 1)
+		v,_ := mem.VirtualMemory()
+		metrics.RequestResourceUpdate(v.UsedPercent)
+		log.Println("v.UsedPercent"+strconv.FormatFloat(v.UsedPercent,'E',-1,64))
+	}
+	
 }
 func usage(w http.ResponseWriter,r *http.Request){
 	timer:=metrics.NewAdmissionLatency()

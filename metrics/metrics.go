@@ -2,7 +2,8 @@ package metrics
 
 import (
 	"time"
-
+	"log"
+	"strconv"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -21,11 +22,11 @@ var (
 			Buckets: []float64{0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 30.0, 60.0, 120.0, 300.0},
 		}, []string{},
 	)
-	requestResource = prometheus.NewGauge(
+	requestResource = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 				Name: "request_resource",
 				Help: "check the usage of cpu resource",
-			},
+			},[]string{},
 		)
 )
 
@@ -61,5 +62,6 @@ func RequestIncrease() {
 }
 
 func RequestResourceUpdate(rate float64)  {
-	requestResource.Set(rate)
+	requestResource.WithLabelValues().Set(rate)
+	log.Println("rate="+strconv.FormatFloat(rate,'E',-1,64))
 }
