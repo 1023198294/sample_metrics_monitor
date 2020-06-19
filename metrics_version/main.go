@@ -25,7 +25,7 @@ func usage(w http.ResponseWriter,r *http.Request){
 	timer:=metrics.NewAdmissionLatency()
 	metrics.RequestIncrease()
 	v,_ := mem.VirtualMemory() //获取CPU占用率情况
-	_,err := w.Write([]byte("Total memory: %v, UsedPercent:%f%%\n",v.Total,v.Free,v.UsedPercent))
+	_,err := w.Write([]byte("Total memory:"+strconv.Itoa(int(v.Total))+", Freed memory: "+strconv.Itoa(int(v.Free))+", UsedPercent:"+strconv.FormatFloat(v.UsedPercent,'E',-1,64)+"% \n"))
 	if err!=nil{
 		log.Println("err:"+err.Error()+" Yes\n")
 	}
